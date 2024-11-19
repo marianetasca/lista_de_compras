@@ -16,6 +16,7 @@ class _LoginRegisterState extends State<LoginRegister> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   AuthenticationService _authService = AuthenticationService();
+  bool _senhaVisivel = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,21 +37,46 @@ class _LoginRegisterState extends State<LoginRegister> {
                           child: Column(children: [
                             TextFormField(
                                 controller: _nameController,
-                                decoration: decoration("Nome"),
+                                decoration: decoration("Nome").copyWith(
+                                  prefixIcon: Icon(Icons.person),
+                                  hintText: 'Seu nome completo',
+                                ),
                                 validator: (value) =>
-                                    requiredValidator(value, "o nome")),
+                                    requiredValidator(value, "o nome"),
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                            ),
                             SizedBox(height: 10),
                             TextFormField(
                                 controller: _emailController,
-                                decoration: decoration("Email"),
-                                validator: (value) =>
-                                    requiredValidator(value, "o email!")),
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: decoration("Email").copyWith(
+                                  prefixIcon: Icon(Icons.email),
+                                  hintText: 'exemplo@email.com',
+                                ),
+                                validator: emailValidator,
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                            ),
                             SizedBox(height: 10),
                             TextFormField(
                                 controller: _passwordController,
-                                decoration: decoration("Senha"),
-                                obscureText: true,
-                                validator: (value) => passwordValidator(value)),
+                                decoration: decoration("Senha").copyWith(
+                                  prefixIcon: Icon(Icons.lock),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _senhaVisivel ? Icons.visibility : Icons.visibility_off,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _senhaVisivel = !_senhaVisivel;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                obscureText: !_senhaVisivel,
+                                validator: passwordValidator,
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                            ),
                             SizedBox(height: 20),
                             ElevatedButton(
                                 onPressed: () async {
